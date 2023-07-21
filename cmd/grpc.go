@@ -6,6 +6,7 @@ import (
 	grpcZap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpcTags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/openfms/authutil"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -24,6 +25,7 @@ func grpcServer(logger *zap.Logger, logReqs bool) *grpc.Server {
 			logger.Error("stack trace from panic " + string(debug.Stack()))
 			return status.Errorf(codes.Internal, "%v", p)
 		})),
+		authutil.StreamServerInterceptor(),
 	}
 
 	unaryServerOptions := []grpc.UnaryServerInterceptor{
@@ -36,6 +38,7 @@ func grpcServer(logger *zap.Logger, logReqs bool) *grpc.Server {
 			logger.Error("stack trace from panic " + string(debug.Stack()))
 			return status.Errorf(codes.Internal, "%v", p)
 		})),
+		authutil.UnaryServerInterceptor(),
 	}
 	return grpc.NewServer(
 		grpc.StreamInterceptor(grpcMiddleware.ChainStreamServer(streamServerOptions...)),

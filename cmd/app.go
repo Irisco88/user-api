@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/openfms/authutil"
 	userpb "github.com/openfms/protos/gen/user/v1"
 	"github.com/openfms/user-api/db"
 	"github.com/openfms/user-api/userapi"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -22,9 +24,16 @@ var (
 	DebugMode      bool
 	LogRequests    bool
 	UserDBPostgres string
+	SecretKey      string
+	TokenValidTime time.Duration
+	Domain         string
 )
 
 func main() {
+	randSecret, err := authutil.GenerateRandomSecretKey(10)
+	if err != nil {
+		log.Fatal(err)
+	}
 	app := &cli.App{
 		Name:  "userapi",
 		Usage: "user service",
@@ -77,6 +86,29 @@ func main() {
 						EnvVars:     []string{"USERDB_POSTGRES"},
 						Required:    true,
 					},
+					&cli.StringFlag{
+						Name:        "secret",
+						Usage:       "jwt secret",
+						Value:       randSecret,
+						DefaultText: randSecret,
+						EnvVars:     []string{"JWT_SECRET"},
+						Destination: &SecretKey,
+					},
+					&cli.StringFlag{
+						Name:        "domain",
+						Usage:       "server domain name",
+						Required:    true,
+						EnvVars:     []string{"DOMAIN"},
+						Destination: &Domain,
+					},
+					&cli.DurationFlag{
+						Name:        "valid-time",
+						Usage:       "jwt toke valid time duration",
+						Value:       time.Hour * 48,
+						DefaultText: "48 hour",
+						EnvVars:     []string{"JWT_VALID_TIME"},
+						Destination: &TokenValidTime,
+					},
 				},
 				Action: func(ctx *cli.Context) error {
 					loggerConfig := zap.NewProductionConfig()
@@ -98,7 +130,8 @@ func main() {
 					if err != nil {
 						return err
 					}
-					userSrv := userapi.NewUserService(logger, userDB)
+					authManager := authutil.NewAuthManager(SecretKey, Domain, TokenValidTime)
+					userSrv := userapi.NewUserService(logger, userDB, authManager)
 					userpb.RegisterUserServiceServer(server, userSrv)
 					go func() {
 						logger.Info("Server running ",
