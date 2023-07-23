@@ -4,12 +4,14 @@ import (
 	"context"
 	sqlmaker "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgxpool"
+	userpb "github.com/openfms/protos/gen/user/v1"
 	"time"
 )
 
 type UserDBPgConn interface {
 	GetPgConn() *pgxpool.Pool
 	GetSQLBuilder() sqlmaker.StatementBuilderType
+	GetUserByEmailUserName(ctx context.Context, userNameEmail string) (*userpb.User, error)
 }
 
 var _ UserDBPgConn = &UserDB{}
