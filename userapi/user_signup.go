@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (us *UserService) SignUp(ctx context.Context, req *userpb.SignUpRequest) (*userpb.SignInResponse, error) {
+func (us *UserService) SignUp(ctx context.Context, req *userpb.SignUpRequest) (*userpb.SignUpResponse, error) {
 	if err := us.ValidateSignUpUser(req); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -44,7 +44,7 @@ func (us *UserService) SignUp(ctx context.Context, req *userpb.SignUpRequest) (*
 		)
 		return nil, status.Error(codes.Internal, "internal error")
 	}
-	return &userpb.SignInResponse{
+	return &userpb.SignUpResponse{
 		Token: token,
 	}, nil
 }
