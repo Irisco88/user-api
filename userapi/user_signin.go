@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	userpb "github.com/openfms/protos/gen/user/v1"
-	"github.com/openfms/user-api/db/postgres"
+	userdb "github.com/openfms/user-api/db/postgres"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -17,7 +17,7 @@ func (us *UserService) SignIn(ctx context.Context, req *userpb.SignInRequest) (*
 	}
 	user, err := us.userDB.GetUserByEmailUserName(ctx, req.UserNameEmail)
 	if err != nil {
-		if errors.Is(err, postgres.ErrUserNotFound) {
+		if errors.Is(err, userdb.ErrUserNotFound) {
 			return nil, status.Error(codes.Unauthenticated, "invalid username or email or password")
 		}
 		us.logger.Error("failed to get user by email or username",

@@ -2,18 +2,27 @@ package userapi
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	userpb "github.com/openfms/protos/gen/user/v1"
 	"regexp"
 )
 
-// ValidateSignupUser validates signup user request
-//func (us *UserService) ValidateSignupUser(req *userpb.SignupRequest) error {
-//	return validation.ValidateStruct(req,
-//		validation.Field(&req.Email, validation.Required, is.Email, validation.Length(8, 255)),
-//		validation.Field(&req.Password, validation.Required, validation.Length(1, 255)),
-//		validation.Field(&req.Name, validation.Required, validation.Length(1, 255)),
-//	)
-//}
+// ValidateCreateUser validates create user request
+func (us *UserService) ValidateCreateUser(req *userpb.CreateUserRequest) error {
+	if e := validation.Validate(req.User, validation.Required); e != nil {
+		return e
+	}
+	user := req.User
+	return validation.ValidateStruct(user,
+		validation.Field(&user.Id, validation.Empty),
+		validation.Field(&user.Email, validation.When(len(user.Email) > 0, validation.Length(8, 255), is.Email)),
+		validation.Field(&user.Password, validation.Required, validation.Length(8, 255)),
+		validation.Field(&user.UserName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&user.FirstName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&user.LastName, validation.When(len(user.LastName) > 0, validation.Length(3, 255))),
+		validation.Field(&user.Avatar, validation.Length(0, 255)),
+	)
+}
 
 // ValidateSignInUser validates signIn user request
 func (us *UserService) ValidateSignInUser(req *userpb.SignInRequest) error {

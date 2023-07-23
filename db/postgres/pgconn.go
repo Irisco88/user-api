@@ -12,6 +12,7 @@ type UserDBPgConn interface {
 	GetPgConn() *pgxpool.Pool
 	GetSQLBuilder() sqlmaker.StatementBuilderType
 	GetUserByEmailUserName(ctx context.Context, userNameEmail string) (*userpb.User, error)
+	CreateUser(ctx context.Context, ownerID uint32, user *userpb.User) error
 }
 
 var _ UserDBPgConn = &UserDB{}
