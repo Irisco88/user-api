@@ -24,6 +24,23 @@ func (us *UserService) ValidateCreateUser(req *userpb.CreateUserRequest) error {
 	)
 }
 
+// ValidateUpdateUser validates update user request
+func (us *UserService) ValidateUpdateUser(req *userpb.UpdateUserRequest) error {
+	if e := validation.Validate(req.User, validation.Required); e != nil {
+		return e
+	}
+	user := req.User
+	return validation.ValidateStruct(user,
+		validation.Field(&user.Id, validation.Required),
+		validation.Field(&user.Email, validation.When(len(user.Email) > 0, validation.Length(8, 255), is.Email)),
+		validation.Field(&user.Password, validation.Required, validation.Length(8, 255)),
+		validation.Field(&user.UserName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&user.FirstName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&user.LastName, validation.When(len(user.LastName) > 0, validation.Length(3, 255))),
+		validation.Field(&user.Avatar, validation.Length(0, 255)),
+	)
+}
+
 // ValidateSignInUser validates signIn user request
 func (us *UserService) ValidateSignInUser(req *userpb.SignInRequest) error {
 	return validation.ValidateStruct(req,
