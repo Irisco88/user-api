@@ -41,6 +41,12 @@ func (us *UserService) ValidateUpdateUser(req *userpb.UpdateUserRequest) error {
 	)
 }
 
+// ValidateDeleteUser validates delete user request
+func (us *UserService) ValidateDeleteUser(req *userpb.DeleteUserRequest) error {
+	return validation.Validate(req.UserId, validation.Required)
+	
+}
+
 // ValidateSignInUser validates signIn user request
 func (us *UserService) ValidateSignInUser(req *userpb.SignInRequest) error {
 	return validation.ValidateStruct(req,

@@ -12,20 +12,20 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// UpdateUser updates an existed user
-func (us *UserService) UpdateUser(ctx context.Context, req *userv1pb.UpdateUserRequest) (*userv1pb.UpdateUserResponse, error) {
+// DeleteUser removes an existed user
+func (us *UserService) DeleteUser(ctx context.Context, req *userv1pb.DeleteUserRequest) (*userv1pb.DeleteUserResponse, error) {
 	claims, ok := authutil.TokenClaimsFromCtx(ctx)
 	if !ok {
 		return nil, status.Error(codes.InvalidArgument, "invalid context")
 	}
-	if err := us.ValidateUpdateUser(req); err != nil {
+	if err := us.ValidateDeleteUser(req); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
-		(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == req.User.Id)) {
+		(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == req.UserId)) {
 		return nil, status.Error(codes.Unauthenticated, "invalid access")
 	}
-	if err := us.userDB.UpdateUser(ctx, req.User); err != nil {
+	if err := us.userDB.DeleteUser(ctx, req.UserId); err != nil {
 		if errors.Is(err, userdb.ErrUserNameEmailExists) {
 			return nil, status.Error(codes.AlreadyExists, err.Error())
 		}
@@ -38,5 +38,5 @@ func (us *UserService) UpdateUser(ctx context.Context, req *userv1pb.UpdateUserR
 		)
 		return nil, status.Error(codes.Internal, "internal error")
 	}
-	return &userv1pb.UpdateUserResponse{}, nil
+	return &userv1pb.DeleteUserResponse{}, nil
 }

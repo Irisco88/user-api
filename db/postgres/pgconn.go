@@ -4,7 +4,6 @@ import (
 	"context"
 	sqlmaker "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgxpool"
-	commonpb "github.com/openfms/protos/gen/common/v1"
 	userpb "github.com/openfms/protos/gen/user/v1"
 	"time"
 )
@@ -14,7 +13,8 @@ type UserDBPgConn interface {
 	GetSQLBuilder() sqlmaker.StatementBuilderType
 	GetUserByEmailUserName(ctx context.Context, userNameEmail string) (*userpb.User, error)
 	CreateUser(ctx context.Context, ownerID uint32, user *userpb.User) error
-	UpdateUser(ctx context.Context, userRole commonpb.UserRole, userID uint32, user *userpb.User) error
+	UpdateUser(ctx context.Context, user *userpb.User) error
+	DeleteUser(ctx context.Context, userID uint32) error
 }
 
 var _ UserDBPgConn = &UserDB{}

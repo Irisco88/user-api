@@ -8,7 +8,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/jackc/pgx/v5 v5.4.1
 	github.com/openfms/authutil v0.0.0-20230721212020-abe28178aee3
-	github.com/openfms/protos v0.0.0-20230723063720-d2885985b919
+	github.com/openfms/protos v0.0.0-20230723083818-f6d76af2b889
 	github.com/urfave/cli/v2 v2.25.7
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.11.0

@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
+	"errors"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	commonpb "github.com/openfms/protos/gen/common/v1"
 	userpb "github.com/openfms/protos/gen/user/v1"
 )
 
@@ -17,12 +18,12 @@ const updateUserQuery = `
 		role=$6,
 		avatar=$7
 	WHERE 
-	    id=$8 AND ($9=2 OR ($9=0 AND id=$10))
+	    id=$8
 	RETURNING id;
 `
 
 // UpdateUser updates a new user
-func (udb *UserDB) UpdateUser(ctx context.Context, userRole commonpb.UserRole, userID uint32, user *userpb.User) error {
+func (udb *UserDB) UpdateUser(ctx context.Context, user *userpb.User) error {
 	err := udb.GetPgConn().QueryRow(ctx, updateUserQuery,
 		user.GetFirstName(),
 		user.GetLastName(),
@@ -32,15 +33,19 @@ func (udb *UserDB) UpdateUser(ctx context.Context, userRole commonpb.UserRole, u
 		user.GetRole(),
 		user.GetAvatar(),
 		user.GetId(),
-		userRole,
-		userID,
 	).Scan(&user.Id)
-	pgErr, ok := err.(*pgconn.PgError)
-	if ok && pgErr.Code == "23505" {
-		if pgErr.ConstraintName == "idx_users_unique_email" ||
-			pgErr.ConstraintName == "idx_users_unique_user_name" {
-			return ErrUserNameEmailExists
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return ErrUserNotFound
 		}
+		pgErr, ok := err.(*pgconn.PgError)
+		if ok && pgErr.Code == "23505" {
+			if pgErr.ConstraintName == "idx_users_unique_email" ||
+				pgErr.ConstraintName == "idx_users_unique_user_name" {
+				return ErrUserNameEmailExists
+			}
+		}
+		return err
 	}
 	return nil
 }
