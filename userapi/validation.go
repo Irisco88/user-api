@@ -44,7 +44,7 @@ func (us *UserService) ValidateUpdateUser(req *userpb.UpdateUserRequest) error {
 // ValidateDeleteUser validates delete user request
 func (us *UserService) ValidateDeleteUser(req *userpb.DeleteUserRequest) error {
 	return validation.Validate(req.UserId, validation.Required)
-	
+
 }
 
 // ValidateSignInUser validates signIn user request
@@ -52,6 +52,18 @@ func (us *UserService) ValidateSignInUser(req *userpb.SignInRequest) error {
 	return validation.ValidateStruct(req,
 		validation.Field(&req.UserNameEmail, validation.Required, validation.Length(1, 255), validation.By(isValidEmailOrUsername)),
 		validation.Field(&req.Password, validation.Required, validation.Length(8, 255)),
+	)
+}
+
+// ValidateSignUpUser validates signup user request
+func (us *UserService) ValidateSignUpUser(req *userpb.SignUpRequest) error {
+	return validation.ValidateStruct(req,
+		validation.Field(&req.Email, validation.When(len(req.Email) > 0, validation.Length(8, 255), is.Email)),
+		validation.Field(&req.Password, validation.Required, validation.Length(8, 255)),
+		validation.Field(&req.UserName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&req.FirstName, validation.Required, validation.Length(3, 255)),
+		validation.Field(&req.LastName, validation.When(len(req.LastName) > 0, validation.Length(3, 255))),
+		validation.Field(&req.Avatar, validation.Length(0, 255)),
 	)
 }
 
