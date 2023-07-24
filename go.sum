@@ -65,6 +65,8 @@ github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 h1:P6pPBnrTSX3DEVR4fDembhR
 github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0/go.mod h1:vmVJ0l/dxyfGW6FmdpVm2joNMFikkuWg0EoCKLGUMNw=
 github.com/openfms/authutil v0.0.0-20230721212020-abe28178aee3 h1:tW4aREuuwB8rKkN6hU8UwWmPW961dQ+7PzpRmOAeR6o=
 github.com/openfms/authutil v0.0.0-20230721212020-abe28178aee3/go.mod h1:Omo0z26Q94xUWhyFU0eHsPiQbmSAKNni2pBnfiuN1Xk=
+github.com/openfms/authutil v0.0.0-20230724053841-3a1a75fda51b h1:JnzmNtYHBfzA13tAukvA9wclX+0CjvsDvMcJkQga/cc=
+github.com/openfms/authutil v0.0.0-20230724053841-3a1a75fda51b/go.mod h1:Omo0z26Q94xUWhyFU0eHsPiQbmSAKNni2pBnfiuN1Xk=
 github.com/openfms/protos v0.0.0-20230721201806-42964c00681b h1:41El0BXLy9Oyf+MD/y/dpkLJzDUb6ZiOzmPpfY0jato=
 github.com/openfms/protos v0.0.0-20230721201806-42964c00681b/go.mod h1:iFILBqT0Zsrbilk4BhQ8pywCDMiwHnDLO7w7YB2yZhc=
 github.com/openfms/protos v0.0.0-20230722221047-4aee89190231 h1:Cah9e84TF4/ulDtcaZ20CFBVMoBkr+YWBbinJdPDGjg=

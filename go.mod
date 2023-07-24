@@ -7,7 +7,7 @@ require (
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/jackc/pgx/v5 v5.4.1
-	github.com/openfms/authutil v0.0.0-20230721212020-abe28178aee3
+	github.com/openfms/authutil v0.0.0-20230724053841-3a1a75fda51b
 	github.com/openfms/protos v0.0.0-20230723091904-baca89bfe4fb
 	github.com/urfave/cli/v2 v2.25.7
 	go.uber.org/zap v1.24.0
