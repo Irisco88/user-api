@@ -2,20 +2,20 @@ package db
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openfms/user-api/db/postgres"
+	userdb "github.com/openfms/user-api/db/postgres"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock_db/conn.go -package=$GOPACKAG
 type UserDBConn interface {
 	GetPgConn() *pgxpool.Pool
-	postgres.UserDBPgConn
+	userdb.UserDBPgConn
 }
 
 var _ UserDBConn = &UserDataBase{}
 
 type UserDataBase struct {
 	pgConn *pgxpool.Pool
-	*postgres.UserDB
+	*userdb.UserDB
 }
 
 func (tdb *UserDataBase) GetPgConn() *pgxpool.Pool {
@@ -23,11 +23,11 @@ func (tdb *UserDataBase) GetPgConn() *pgxpool.Pool {
 }
 
 func NewUserDB(pgURL string) (*UserDataBase, error) {
-	fmsConn, err := postgres.ConnectToUserDB(pgURL)
+	fmsConn, err := userdb.ConnectToUserDB(pgURL)
 	if err != nil {
 		return nil, err
 	}
 	return &UserDataBase{
-		UserDB: postgres.NewUserDB(fmsConn),
+		UserDB: userdb.NewUserDB(fmsConn),
 	}, nil
 }

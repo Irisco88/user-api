@@ -15,6 +15,7 @@ type UserDBPgConn interface {
 	CreateUser(ctx context.Context, ownerID uint32, user *userpb.User) error
 	UpdateUser(ctx context.Context, user *userpb.User) error
 	DeleteUser(ctx context.Context, userID uint32) error
+	GetUser(ctx context.Context, userID uint32) (*userpb.User, error)
 }
 
 var _ UserDBPgConn = &UserDB{}
