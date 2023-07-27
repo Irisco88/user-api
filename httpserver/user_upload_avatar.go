@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
+	"github.com/openfms/authutil"
+	commonpb "github.com/openfms/protos/gen/common/v1"
 	"go.uber.org/zap"
 	"net/http"
 	"path/filepath"
@@ -13,15 +15,23 @@ import (
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
 	request.ParseMultipartForm(10 << 20) // Set maximum form size (10 MB in this example)
-	ctx := request.Context()
+	claims, found := authutil.TokenClaimsFromCtx(request.Context())
+	if !found {
+		http.Error(resp, "get claims failed", http.StatusUnauthorized)
+		return
+	}
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
 		http.Error(resp, "parse user_id failed", http.StatusBadRequest)
 		return
 	}
+	if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
+		(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == uint32(userID))) {
+		http.Error(resp, "invalid access", http.StatusUnauthorized)
+		return
+	}
 
-	uhs.log.Info("new request", zap.Uint64("userID", userID))
 	file, handler, err := request.FormFile("file")
 	if err != nil {
 		http.Error(resp, "Failed to retrieve file from form", http.StatusBadRequest)
@@ -46,9 +56,8 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	uniqueCode := uuid.New().String()
 
 	// Save the photo into MinIO with the unique code as the object name
-	objectName := fmt.Sprintf("user123/%s%s", uniqueCode, fileExt)
-	_ = objectName
-	fileInfo, err := uhs.minioClient.PutObject(ctx,
+	objectName := fmt.Sprintf("user%d/%s%s", userID, uniqueCode, fileExt)
+	fileInfo, err := uhs.minioClient.PutObject(request.Context(),
 		uhs.envConfig.MinioAvatarsBucket,
 		objectName,
 		file,
@@ -65,6 +74,6 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	// Respond with the unique code for the uploaded picture
 	respondWithJSON(resp, http.StatusCreated, map[string]string{
 		"checksum": fileInfo.ETag,
-		"code":     uniqueCode,
+		"file":     fmt.Sprintf("%s%s", uniqueCode, fileExt),
 	})
 }
