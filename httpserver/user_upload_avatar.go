@@ -34,6 +34,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 
 	file, handler, err := request.FormFile("file")
 	if err != nil {
+		uhs.log.Error("failed to get file", zap.Error(err))
 		http.Error(resp, "Failed to retrieve file from form", http.StatusBadRequest)
 		return
 	}
@@ -64,7 +65,8 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		handler.Size,
 		minio.PutObjectOptions{ContentType: handler.Header.Get("Content-Type")})
 	if err != nil {
-		http.Error(resp, "Failed to s ave photo to MinIO", http.StatusInternalServerError)
+		uhs.log.Info("Failed to s ave photo to MinIO", zap.Error(err))
+		http.Error(resp, "internal error", http.StatusInternalServerError)
 		return
 	}
 	fmt.Printf("%#v\n", fileInfo)
