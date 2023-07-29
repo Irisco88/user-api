@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/openfms/authutil"
 	userpb "github.com/openfms/protos/gen/user/v1"
 	"github.com/openfms/user-api/db"
+	"github.com/openfms/user-api/envconfig"
+	userhttp "github.com/openfms/user-api/httpserver"
 	"github.com/openfms/user-api/userapi"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc/reflection"
@@ -27,6 +31,9 @@ var (
 	SecretKey      string
 	TokenValidTime time.Duration
 	Domain         string
+	MinioEndpoint  string
+	MinioAccessKey string
+	MinioSecretKey string
 )
 
 func main() {
@@ -101,6 +108,27 @@ func main() {
 						EnvVars:     []string{"DOMAIN"},
 						Destination: &Domain,
 					},
+					&cli.StringFlag{
+						Name:        "minio",
+						Usage:       "minio endpoint",
+						Required:    true,
+						EnvVars:     []string{"MINIO_ENDPOINT"},
+						Destination: &MinioEndpoint,
+					},
+					&cli.StringFlag{
+						Name:        "minio",
+						Usage:       "minio access key",
+						Required:    true,
+						EnvVars:     []string{"MINIO_ACCESS_KEY"},
+						Destination: &MinioAccessKey,
+					},
+					&cli.StringFlag{
+						Name:        "minio",
+						Usage:       "minio secret key",
+						Required:    true,
+						EnvVars:     []string{"MINIO_SECRET_KEY"},
+						Destination: &MinioSecretKey,
+					},
 					&cli.DurationFlag{
 						Name:        "valid-time",
 						Usage:       "jwt toke valid time duration",
@@ -144,6 +172,21 @@ func main() {
 							return
 						}
 					}()
+					minioClient, err := minio.New(MinioEndpoint, &minio.Options{
+						Creds:  credentials.NewStaticV4(MinioAccessKey, MinioSecretKey, ""),
+						Secure: false,
+					})
+					userhttp.NewUserHTTPServer(logger, userDB, &envconfig.UserEnvConfig{
+						DebugMode:      DebugMode,
+						MinioAccessKey: MinioAccessKey,
+						MinioEndpoint:  MinioEndpoint,
+						MinioSecretKey: MinioSecretKey,
+						Domain:         Domain,
+						JWTSecret:      SecretKey,
+						UserDatabase:   UserDBPostgres,
+						Host:           HostAddress,
+						Port:           PortNumber,
+					}, minioClient, authManager)
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs

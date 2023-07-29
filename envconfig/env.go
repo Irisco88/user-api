@@ -9,7 +9,7 @@ type UserEnvConfig struct {
 	UserDatabase       string        `env:"USERDB_POSTGRES,notEmpty"`
 	DebugMode          bool          `env:"DEBUG_MODE" envDefault:"false"`
 	Host               string        `env:"HOST" envDefault:"0.0.0.0"`
-	Port               string        `env:"PORT" envDefault:"3000"`
+	Port               uint          `env:"PORT" envDefault:"3000"`
 	LogRequests        bool          `env:"LOG_REQUESTS" envDefault:"false"`
 	JWTSecret          string        `env:"JWT_SECRET"`
 	Domain             string        `env:"DOMAIN"`
