@@ -19,6 +19,8 @@ type UserEnvConfig struct {
 	MinioSecretKey     string        `env:"MINIO_SECRET_KEY,notEmpty"`
 	MinioAvatarsBucket string        `env:"MINIO_AVATARS_BUCKET" envDefault:"user-avatars"`
 	UserAvatarMaxSize  int           `env:"USER_AVATAR_MAX_SIZE" envDefault:"5242880"` //bytes
+	UserHTTPPort       uint          `env:"USER_HTTP_PORT" envDefault:"8000"`
+	UserHTTPHost       string        `env:"USER_HTTP_HOST" envDefault:"0.0.0.0"`
 }
 
 func ReadUserEnvironment() (*UserEnvConfig, error) {

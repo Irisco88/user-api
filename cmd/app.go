@@ -34,6 +34,8 @@ var (
 	MinioEndpoint  string
 	MinioAccessKey string
 	MinioSecretKey string
+	UserHttpHost   string
+	UserHttpPort   uint
 )
 
 func main() {
@@ -65,6 +67,23 @@ func main() {
 						Aliases:     []string{"p"},
 						Destination: &PortNumber,
 						EnvVars:     []string{"PORT"},
+					},
+					&cli.StringFlag{
+						Name:        "http-host",
+						Usage:       "http host address",
+						Value:       "0.0.0.0",
+						DefaultText: "0.0.0.0",
+						Destination: &UserHttpHost,
+						EnvVars:     []string{"USER_HTTP_HOST"},
+					},
+					&cli.UintFlag{
+						Name:        "http-port",
+						Usage:       "http server port number",
+						Value:       8000,
+						DefaultText: "8000",
+						Aliases:     []string{"hp"},
+						Destination: &UserHttpPort,
+						EnvVars:     []string{"USER_HTTP_PORT"},
 					},
 					&cli.BoolFlag{
 						Name:        "debug",
@@ -116,14 +135,14 @@ func main() {
 						Destination: &MinioEndpoint,
 					},
 					&cli.StringFlag{
-						Name:        "minio",
+						Name:        "minio-key",
 						Usage:       "minio access key",
 						Required:    true,
 						EnvVars:     []string{"MINIO_ACCESS_KEY"},
 						Destination: &MinioAccessKey,
 					},
 					&cli.StringFlag{
-						Name:        "minio",
+						Name:        "minio-secret",
 						Usage:       "minio secret key",
 						Required:    true,
 						EnvVars:     []string{"MINIO_SECRET_KEY"},
@@ -176,7 +195,7 @@ func main() {
 						Creds:  credentials.NewStaticV4(MinioAccessKey, MinioSecretKey, ""),
 						Secure: false,
 					})
-					userhttp.NewUserHTTPServer(logger, userDB, &envconfig.UserEnvConfig{
+					httpserver := userhttp.NewUserHTTPServer(logger, userDB, &envconfig.UserEnvConfig{
 						DebugMode:      DebugMode,
 						MinioAccessKey: MinioAccessKey,
 						MinioEndpoint:  MinioEndpoint,
@@ -186,7 +205,15 @@ func main() {
 						UserDatabase:   UserDBPostgres,
 						Host:           HostAddress,
 						Port:           PortNumber,
+						UserHTTPPort:   UserHttpPort,
+						UserHTTPHost:   UserHttpHost,
 					}, minioClient, authManager)
+					go func() {
+						if e := httpserver.Run(UserHttpHost, UserHttpPort); e != nil {
+							logger.Error("failed to start user http", zap.Error(e))
+						}
+					}()
+
 					sigs := make(chan os.Signal, 1)
 					signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 					<-sigs

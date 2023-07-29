@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/minio/minio-go/v7"
 	"github.com/openfms/authutil"
@@ -37,9 +38,12 @@ func NewUserHTTPServer(logger *zap.Logger, dbConn userdb.UserDBPgConn, env *envc
 	return server
 }
 
-func (uhs *UserHTTPServer) Run(host string, port string) error {
+func (uhs *UserHTTPServer) Run(host string, port uint) error {
+	uhs.log.Info("running http server",
+		zap.String("addr", net.JoinHostPort(host, fmt.Sprintf("%d", port))),
+	)
 	srv := &http.Server{
-		Addr:         net.JoinHostPort(host, port),
+		Addr:         net.JoinHostPort(host, fmt.Sprintf("%d", port)),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
