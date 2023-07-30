@@ -14,7 +14,6 @@ import (
 )
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
-	request.ParseMultipartForm(10 << 20) // Set maximum form size (10 MB in this example)
 	claims, found := authutil.TokenClaimsFromCtx(request.Context())
 	if !found {
 		http.Error(resp, "get claims failed", http.StatusUnauthorized)
@@ -32,7 +31,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		return
 	}
 
-	file, handler, err := request.FormFile("file")
+	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
 		uhs.log.Error("failed to get file", zap.Error(err))
 		http.Error(resp, "Failed to retrieve file from form", http.StatusBadRequest)
@@ -41,13 +40,13 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	defer file.Close()
 
 	// Validate file size
-	if handler.Size > int64(uhs.envConfig.UserAvatarMaxSize) {
+	if fileHeader.Size > int64(uhs.envConfig.UserAvatarMaxSize) {
 		http.Error(resp, "File size exceeds the maximum limit of 5 MB", http.StatusBadRequest)
 		return
 	}
 
 	// Validate file extension (only allow PNG and JPEG)
-	fileExt := strings.ToLower(filepath.Ext(handler.Filename))
+	fileExt := strings.ToLower(filepath.Ext(fileHeader.Filename))
 	if fileExt != ".png" && fileExt != ".jpeg" && fileExt != ".jpg" {
 		http.Error(resp, "Invalid file extension. Only PNG and JPEG are allowed", http.StatusBadRequest)
 		return
@@ -62,14 +61,13 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		uhs.envConfig.MinioAvatarsBucket,
 		objectName,
 		file,
-		handler.Size,
-		minio.PutObjectOptions{ContentType: handler.Header.Get("Content-Type")})
+		fileHeader.Size,
+		minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")})
 	if err != nil {
 		uhs.log.Info("Failed to s ave photo to MinIO", zap.Error(err))
 		http.Error(resp, "internal error", http.StatusInternalServerError)
 		return
 	}
-	fmt.Printf("%#v\n", fileInfo)
 	uhs.log.Info("file uploaded",
 		zap.String("key", fileInfo.Key),
 		zap.String("checksum", fileInfo.ChecksumSHA256))
