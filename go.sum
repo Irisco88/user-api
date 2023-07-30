@@ -58,6 +58,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 h1:YBftPWNWd4WwGqtY2yeZL2ef8rH
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0/go.mod h1:YN5jB8ie0yfIUg6VvR9Kz84aCaG7AsGZnLjhHbUqwPg=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.1 h1:RoziI+96HlQWrbaVhgOOdFYUHtX81pwA6tCgDS9FNRo=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.1/go.mod h1:Rj8lEaVgLiPn1jTMVXEhATiZhuyXJq167bMYPbJM1CY=
+github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.2 h1:dygLcbEBA+t/P7ck6a8AkXv6juQ4cK0RHBoh32jxhHM=
+github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.2/go.mod h1:Ap9RLCIJVtgQg1/BBgVEfypOAySvvlcpcVQkSzJCH4Y=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a h1:bbPeKD0xmW/Y25WS6cokEszi5g+S0QxI/d45PkRi7Nk=
@@ -100,6 +102,8 @@ github.com/openfms/authutil v0.0.0-20230727225137-76da7d6d7ef9 h1:z35TUMlUhHTOGO
 github.com/openfms/authutil v0.0.0-20230727225137-76da7d6d7ef9/go.mod h1:Omo0z26Q94xUWhyFU0eHsPiQbmSAKNni2pBnfiuN1Xk=
 github.com/openfms/authutil v0.0.0-20230727225306-a992df883649 h1:VWVniPpnKxdSwdFbBTcmiFwDEr3GJRPbnIPaOCYnVEA=
 github.com/openfms/authutil v0.0.0-20230727225306-a992df883649/go.mod h1:y9DC3K7OeCiaSlyldlWeGw6EcvEEAJnM02ApzB4Fbds=
+github.com/openfms/authutil v0.0.0-20230730125950-f6d611fbe170 h1:jS0rlP1BgB7GYfgDEgZGCSedKN/AGmFtJ9/c75HNwAA=
+github.com/openfms/authutil v0.0.0-20230730125950-f6d611fbe170/go.mod h1:y9DC3K7OeCiaSlyldlWeGw6EcvEEAJnM02ApzB4Fbds=
 github.com/openfms/protos v0.0.0-20230723091904-baca89bfe4fb h1:+wvFK9yMUFOb+PSXgb1kTk3ArJwBRgTGNuGkrmLYwSs=
 github.com/openfms/protos v0.0.0-20230723091904-baca89bfe4fb/go.mod h1:iFILBqT0Zsrbilk4BhQ8pywCDMiwHnDLO7w7YB2yZhc=
 github.com/openfms/protos v0.0.0-20230726202322-dd787022b2e6 h1:YloHyDLrcb/eEXmY6OnrRPG1ZUnTil31xO1kO407qoo=
@@ -150,6 +154,8 @@ golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1 h1:MGwJjxBy0HJshjDNfLsYO8xpp
 golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1/go.mod h1:FXUEEKJgO7OQYeo8N01OfiKP8RXMtf6e8aTskBGqWdc=
 golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 h1:Di6/M8l0O2lCLc6VVRWhgCiApHV8MnQurBnFSHsQtNY=
 golang.org/x/exp v0.0.0-20230725093048-515e97ebf090/go.mod h1:FXUEEKJgO7OQYeo8N01OfiKP8RXMtf6e8aTskBGqWdc=
+golang.org/x/exp v0.0.0-20230728194245-b0cb94b80691 h1:/yRP+0AN7mf5DkD3BAI6TOFnd51gEoDEb8o35jIFtgw=
+golang.org/x/exp v0.0.0-20230728194245-b0cb94b80691/go.mod h1:FXUEEKJgO7OQYeo8N01OfiKP8RXMtf6e8aTskBGqWdc=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
 golang.org/x/lint v0.0.0-20190227174305-5b3e6a55c961/go.mod h1:wehouNa3lNwaWXcvxsM5YxQ5yQlVC4a0KAMCusXpPoU=
 golang.org/x/lint v0.0.0-20190313153728-d0100b6bd8b3/go.mod h1:6SW0HCj/g11FgYtHlgUYUwCkIfeOF89ocIRzGO/8vkc=

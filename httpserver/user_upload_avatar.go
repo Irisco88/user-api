@@ -14,6 +14,7 @@ import (
 )
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
+	request.ParseMultipartForm(10 << 20) // Set maximum form size (10 MB in this example)
 	claims, found := authutil.TokenClaimsFromCtx(request.Context())
 	if !found {
 		http.Error(resp, "get claims failed", http.StatusUnauthorized)
@@ -70,7 +71,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	}
 	uhs.log.Info("file uploaded",
 		zap.String("key", fileInfo.Key),
-		zap.String("checksum", fileInfo.ChecksumSHA256))
+		zap.String("checksum", fileInfo.ETag))
 	// Respond with the unique code for the uploaded picture
 	respondWithJSON(resp, http.StatusCreated, map[string]string{
 		"checksum": fileInfo.ETag,
