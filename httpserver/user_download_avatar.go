@@ -43,6 +43,10 @@ func (uhs *UserHTTPServer) DownloadAvatarHandler(resp http.ResponseWriter, reque
 	// Retrieve the object's metadata to obtain the Content-Type
 	objectInfo, err := object.Stat()
 	if err != nil {
+		if minioErr, ok := err.(minio.ErrorResponse); ok && minioErr.Code == "NoSuchKey" {
+			http.Error(resp, "object not found", http.StatusNotFound)
+			return
+		}
 		uhs.log.Error("Failed to retrieve object metadata", zap.Error(err))
 		http.Error(resp, "internal error", http.StatusInternalServerError)
 		return
