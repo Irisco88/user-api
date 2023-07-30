@@ -23,19 +23,20 @@ import (
 )
 
 var (
-	HostAddress    string
-	PortNumber     uint
-	DebugMode      bool
-	LogRequests    bool
-	UserDBPostgres string
-	SecretKey      string
-	TokenValidTime time.Duration
-	Domain         string
-	MinioEndpoint  string
-	MinioAccessKey string
-	MinioSecretKey string
-	UserHttpHost   string
-	UserHttpPort   uint
+	HostAddress       string
+	PortNumber        uint
+	DebugMode         bool
+	LogRequests       bool
+	UserDBPostgres    string
+	SecretKey         string
+	TokenValidTime    time.Duration
+	Domain            string
+	MinioEndpoint     string
+	MinioAccessKey    string
+	MinioSecretKey    string
+	MinioAvatarBucket string
+	UserHttpHost      string
+	UserHttpPort      uint
 )
 
 func main() {
@@ -148,6 +149,14 @@ func main() {
 						EnvVars:     []string{"MINIO_SECRET_KEY"},
 						Destination: &MinioSecretKey,
 					},
+					&cli.StringFlag{
+						Name:        "avatar-bucket",
+						Usage:       "minio avatar bucket name",
+						DefaultText: "user-avatars",
+						Value:       "user-avatars",
+						EnvVars:     []string{"MINIO_AVATARS_BUCKET"},
+						Destination: &MinioAvatarBucket,
+					},
 					&cli.DurationFlag{
 						Name:        "valid-time",
 						Usage:       "jwt toke valid time duration",
@@ -195,18 +204,33 @@ func main() {
 						Creds:  credentials.NewStaticV4(MinioAccessKey, MinioSecretKey, ""),
 						Secure: false,
 					})
+					exists, err := minioClient.BucketExists(ctx.Context, MinioAvatarBucket)
+					if err != nil {
+						return err
+					}
+					if !exists {
+						// Create the bucket
+						err = minioClient.MakeBucket(ctx.Context, MinioAvatarBucket, minio.MakeBucketOptions{})
+						if err != nil {
+							return err
+						}
+						logger.Info("Bucket created successfully.",
+							zap.String("bucket", MinioAvatarBucket),
+						)
+					}
 					httpserver := userhttp.NewUserHTTPServer(logger, userDB, &envconfig.UserEnvConfig{
-						DebugMode:      DebugMode,
-						MinioAccessKey: MinioAccessKey,
-						MinioEndpoint:  MinioEndpoint,
-						MinioSecretKey: MinioSecretKey,
-						Domain:         Domain,
-						JWTSecret:      SecretKey,
-						UserDatabase:   UserDBPostgres,
-						Host:           HostAddress,
-						Port:           PortNumber,
-						UserHTTPPort:   UserHttpPort,
-						UserHTTPHost:   UserHttpHost,
+						DebugMode:          DebugMode,
+						MinioAccessKey:     MinioAccessKey,
+						MinioEndpoint:      MinioEndpoint,
+						MinioSecretKey:     MinioSecretKey,
+						Domain:             Domain,
+						JWTSecret:          SecretKey,
+						UserDatabase:       UserDBPostgres,
+						Host:               HostAddress,
+						Port:               PortNumber,
+						UserHTTPPort:       UserHttpPort,
+						UserHTTPHost:       UserHttpHost,
+						MinioAvatarsBucket: MinioAvatarBucket,
 					}, minioClient, authManager)
 					go func() {
 						if e := httpserver.Run(UserHttpHost, UserHttpPort); e != nil {

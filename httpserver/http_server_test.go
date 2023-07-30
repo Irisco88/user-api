@@ -28,5 +28,5 @@ func TestNewUserHTTPServer(t *testing.T) {
 	}
 	authManager := authutil.NewAuthManager(env.JWTSecret, env.Domain, env.JwtValidTime)
 	httpServer := NewUserHTTPServer(logger, dbConn, env, client, authManager)
-	assert.NilError(t, httpServer.Run("127.0.0.1", "6060"))
+	assert.NilError(t, httpServer.Run("127.0.0.1", 6060))
 }
