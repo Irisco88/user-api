@@ -20,6 +20,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		http.Error(resp, "get claims failed", http.StatusUnauthorized)
 		return
 	}
+	uhs.log.Info("minio endpoint", zap.String("endpoint", uhs.envConfig.MinioEndpoint))
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
@@ -65,7 +66,11 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		fileHeader.Size,
 		minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")})
 	if err != nil {
-		uhs.log.Info("Failed to s ave photo to MinIO", zap.Error(err))
+		uhs.log.Info("Failed to save photo to MinIO", zap.Error(err))
+		if minioErr, ok := err.(minio.ErrorResponse); ok {
+			fmt.Println("MinIO Error Code:", minioErr.Code)
+			fmt.Println("MinIO Error Message:", minioErr.Message)
+		}
 		http.Error(resp, "internal error", http.StatusInternalServerError)
 		return
 	}
