@@ -80,8 +80,10 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		zap.String("key", fileInfo.Key),
 		zap.String("checksum", fileInfo.ETag))
 	// Respond with the unique code for the uploaded picture
+	fileName := fmt.Sprintf("%s%s", uniqueCode, fileExt)
 	respondWithJSON(resp, http.StatusCreated, map[string]string{
 		"checksum": fileInfo.ETag,
-		"file":     fmt.Sprintf("%s%s", uniqueCode, fileExt),
+		"file":     fileName,
+		"path":     fmt.Sprintf("/api/v1/user/avatar/download/%s", GetEncodedAvatar(fileName, uint32(userID))),
 	})
 }
