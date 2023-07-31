@@ -2,25 +2,25 @@ package httpserver
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/minio/minio-go/v7"
 	"go.uber.org/zap"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 )
 
 func (uhs *UserHTTPServer) DownloadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
-	queryParams := request.URL.Query()
-	userIDStr := queryParams.Get("user_id")
-	fileName := queryParams.Get("file")
-	userID, err := strconv.ParseUint(userIDStr, 10, 32)
+	code := mux.Vars(request)["code"]
+	fileName, userID, err := DecodeEncodedAvatar(code)
 	if err != nil {
-		respondWithError(resp, http.StatusBadRequest, "Invalid user_id parameter")
+		uhs.log.Error("Failed to parse code",
+			zap.Error(err),
+			zap.String("code", code),
+		)
+		respondWithError(resp, http.StatusBadRequest, "Failed to parse code")
 		return
 	}
-	uhs.log.Info("new request", zap.String("file", fileName), zap.Uint64("userID", userID))
-
 	tempFile, err := os.CreateTemp("", fmt.Sprintf("tempfile.*%s", filepath.Ext(fileName)))
 	if err != nil {
 		uhs.log.Error("Failed to create temp file", zap.Error(err))

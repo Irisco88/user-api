@@ -56,11 +56,11 @@ func (uhs *UserHTTPServer) Run(host string, port uint) error {
 
 func (uhs *UserHTTPServer) InitializeRoutes() {
 	uhs.Router.HandleFunc("/api/v1/user/avatar/upload", uhs.UploadAvatarHandler).Methods("POST")
-	uhs.Router.HandleFunc("/api/v1/user/avatar/download", uhs.DownloadAvatarHandler).Methods("GET")
+	uhs.Router.HandleFunc("/api/v1/user/avatar/download/{code}", uhs.DownloadAvatarHandler).Methods("GET")
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
-	respondWithJSON(w, code, map[string]string{"error": message})
+	respondWithJSON(w, code, map[string]any{"message": message, "code": code})
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload any) {
