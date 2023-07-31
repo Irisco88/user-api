@@ -17,7 +17,6 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	//	http.Error(resp, "get claims failed", http.StatusUnauthorized)
 	//	return
 	//}
-	uhs.log.Info("minio endpoint", zap.String("endpoint", uhs.envConfig.MinioEndpoint))
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
