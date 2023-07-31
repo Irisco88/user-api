@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
+	commonpb "github.com/openfms/protos/gen/common/v1"
 	"go.uber.org/zap"
 	"net/http"
 	"path/filepath"
@@ -12,23 +13,28 @@ import (
 )
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
-	//claims, found := authutil.TokenClaimsFromCtx(request.Context())
-	//if !found {
-	//	http.Error(resp, "get claims failed", http.StatusUnauthorized)
-	//	return
-	//}
+	token := request.Header.Get("token")
+	if len(token) == 0 {
+		respondWithError(resp, http.StatusUnauthorized, "token not found")
+		return
+	}
+	claims, err := uhs.authManager.VerifyToken(token)
+	if err != nil {
+		respondWithError(resp, http.StatusUnauthorized, err.Error())
+
+		return
+	}
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
 		respondWithError(resp, http.StatusBadRequest, "parse user_id failed")
 		return
 	}
-	//if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
-	//	(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == uint32(userID))) {
-	//	http.Error(resp, "invalid access", http.StatusUnauthorized)
-	//	return
-	//}
-
+	if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
+		(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == uint32(userID))) {
+		respondWithError(resp, http.StatusUnauthorized, "invalid access")
+		return
+	}
 	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
 		uhs.log.Error("failed to get file", zap.Error(err))

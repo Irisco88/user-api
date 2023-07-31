@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/minio/minio-go/v7"
 	"github.com/openfms/authutil"
-	commonpb "github.com/openfms/protos/gen/common/v1"
 	userdb "github.com/openfms/user-api/db/postgres"
 	"github.com/openfms/user-api/envconfig"
 	"go.uber.org/zap"
@@ -58,23 +57,6 @@ func (uhs *UserHTTPServer) Run(host string, port uint) error {
 func (uhs *UserHTTPServer) InitializeRoutes() {
 	uhs.Router.HandleFunc("/api/v1/user/avatar/upload", uhs.UploadAvatarHandler).Methods("POST")
 	uhs.Router.HandleFunc("/api/v1/user/avatar/download", uhs.DownloadAvatarHandler).Methods("GET")
-	//uhs.Router.Use(authutil.MuxAuthMiddleware(uhs))
-}
-
-func (uhs *UserHTTPServer) GetAuthManager() *authutil.AuthManager {
-	return uhs.authManager
-}
-
-func (uhs *UserHTTPServer) GetRoleAccess(path string) []commonpb.UserRole {
-	methodsPerms := map[string][]commonpb.UserRole{
-		"/api/v1/user/avatar/upload":   {commonpb.UserRole_USER_ROLE_NORMAL, commonpb.UserRole_USER_ROLE_ADMIN},
-		"/api/v1/user/avatar/download": {commonpb.UserRole_USER_ROLE_NORMAL, commonpb.UserRole_USER_ROLE_READER, commonpb.UserRole_USER_ROLE_ADMIN},
-	}
-	roles, ok := methodsPerms[path]
-	if ok {
-		return roles
-	}
-	return nil
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
