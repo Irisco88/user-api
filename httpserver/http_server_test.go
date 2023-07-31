@@ -21,7 +21,7 @@ func TestNewUserHTTPServer(t *testing.T) {
 	assert.NilError(t, err)
 	client, err := minio.New(env.MinioEndpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(env.MinioAccessKey, env.MinioSecretKey, ""),
-		Secure: false, // Set to true if your MinIO server supports SSL
+		Secure: false,
 	})
 	if err != nil {
 		panic(err)

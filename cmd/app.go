@@ -37,6 +37,7 @@ var (
 	MinioAvatarBucket string
 	UserHttpHost      string
 	UserHttpPort      uint
+	MaxAvatarSize     int
 )
 
 func main() {
@@ -157,6 +158,14 @@ func main() {
 						EnvVars:     []string{"MINIO_AVATARS_BUCKET"},
 						Destination: &MinioAvatarBucket,
 					},
+					&cli.IntFlag{
+						Name:        "avatar-max-size",
+						Usage:       "avatar max file size",
+						DefaultText: "5242880",
+						Value:       5242880,
+						EnvVars:     []string{"USER_AVATAR_MAX_SIZE"},
+						Destination: &MaxAvatarSize,
+					},
 					&cli.DurationFlag{
 						Name:        "valid-time",
 						Usage:       "jwt toke valid time duration",
@@ -231,6 +240,7 @@ func main() {
 						UserHTTPPort:       UserHttpPort,
 						UserHTTPHost:       UserHttpHost,
 						MinioAvatarsBucket: MinioAvatarBucket,
+						UserAvatarMaxSize:  MaxAvatarSize,
 					}, minioClient, authManager)
 					go func() {
 						if e := httpserver.Run(UserHttpHost, UserHttpPort); e != nil {

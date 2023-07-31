@@ -12,7 +12,6 @@ import (
 )
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
-	request.ParseMultipartForm(10 << 20) // Set maximum form size (10 MB in this example)
 	//claims, found := authutil.TokenClaimsFromCtx(request.Context())
 	//if !found {
 	//	http.Error(resp, "get claims failed", http.StatusUnauthorized)
@@ -40,7 +39,6 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	defer file.Close()
 
 	// Validate file size
-	uhs.log.Info("size", zap.Int64("size", fileHeader.Size))
 	if fileHeader.Size > int64(uhs.envConfig.UserAvatarMaxSize) {
 		respondWithError(resp, http.StatusBadRequest, "File size exceeds the maximum limit of 5 MB")
 		return
