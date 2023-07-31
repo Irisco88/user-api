@@ -22,7 +22,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
-		http.Error(resp, "parse user_id failed", http.StatusBadRequest)
+		respondWithError(resp, http.StatusBadRequest, "parse user_id failed")
 		return
 	}
 	//if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
@@ -34,21 +34,22 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
 		uhs.log.Error("failed to get file", zap.Error(err))
-		http.Error(resp, "Failed to retrieve file from form", http.StatusBadRequest)
+		respondWithError(resp, http.StatusBadRequest, "Failed to retrieve file from form")
 		return
 	}
 	defer file.Close()
 
 	// Validate file size
+	uhs.log.Info("size", zap.Int64("size", fileHeader.Size))
 	if fileHeader.Size > int64(uhs.envConfig.UserAvatarMaxSize) {
-		http.Error(resp, "File size exceeds the maximum limit of 5 MB", http.StatusBadRequest)
+		respondWithError(resp, http.StatusBadRequest, "File size exceeds the maximum limit of 5 MB")
 		return
 	}
 
 	// Validate file extension (only allow PNG and JPEG)
 	fileExt := strings.ToLower(filepath.Ext(fileHeader.Filename))
 	if fileExt != ".png" && fileExt != ".jpeg" && fileExt != ".jpg" {
-		http.Error(resp, "Invalid file extension. Only PNG and JPEG are allowed", http.StatusBadRequest)
+		respondWithError(resp, http.StatusBadRequest, "Invalid file extension. Only PNG and JPEG are allowed")
 		return
 	}
 
@@ -69,7 +70,7 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 			fmt.Println("MinIO Error Code:", minioErr.Code)
 			fmt.Println("MinIO Error Message:", minioErr.Message)
 		}
-		http.Error(resp, "internal error", http.StatusInternalServerError)
+		respondWithError(resp, http.StatusInternalServerError, "internal error")
 		return
 	}
 	uhs.log.Info("file uploaded",

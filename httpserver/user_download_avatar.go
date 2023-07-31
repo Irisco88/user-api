@@ -22,7 +22,7 @@ func (uhs *UserHTTPServer) DownloadAvatarHandler(resp http.ResponseWriter, reque
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		// Handle the error if the conversion fails
-		http.Error(resp, "Invalid user_id parameter", http.StatusBadRequest)
+		respondWithError(resp, http.StatusBadRequest, "Invalid user_id parameter")
 		return
 	}
 	uhs.log.Info("new request", zap.String("file", fileName), zap.Uint64("userID", userID))
@@ -34,7 +34,8 @@ func (uhs *UserHTTPServer) DownloadAvatarHandler(resp http.ResponseWriter, reque
 	tempFile, err := os.CreateTemp("", fmt.Sprintf("tempfile.*%s", filepath.Ext(fileName)))
 	if err != nil {
 		uhs.log.Error("Failed to create temp file", zap.Error(err))
-		http.Error(resp, "internal error", http.StatusInternalServerError)
+		respondWithError(resp, http.StatusInternalServerError, "internal error")
+		return
 	}
 	//defer os.Remove(tempFile.Name())
 	objectName := fmt.Sprintf("user%d/%s", userID, fileName)
