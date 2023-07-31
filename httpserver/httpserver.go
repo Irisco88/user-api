@@ -58,7 +58,7 @@ func (uhs *UserHTTPServer) Run(host string, port uint) error {
 func (uhs *UserHTTPServer) InitializeRoutes() {
 	uhs.Router.HandleFunc("/api/v1/user/avatar/upload", uhs.UploadAvatarHandler).Methods("POST")
 	uhs.Router.HandleFunc("/api/v1/user/avatar/download", uhs.DownloadAvatarHandler).Methods("GET")
-	uhs.Router.Use(authutil.MuxAuthMiddleware(uhs))
+	//uhs.Router.Use(authutil.MuxAuthMiddleware(uhs))
 }
 
 func (uhs *UserHTTPServer) GetAuthManager() *authutil.AuthManager {

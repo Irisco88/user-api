@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
-	"github.com/openfms/authutil"
-	commonpb "github.com/openfms/protos/gen/common/v1"
 	"go.uber.org/zap"
 	"net/http"
 	"path/filepath"
@@ -15,11 +13,11 @@ import (
 
 func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request *http.Request) {
 	request.ParseMultipartForm(10 << 20) // Set maximum form size (10 MB in this example)
-	claims, found := authutil.TokenClaimsFromCtx(request.Context())
-	if !found {
-		http.Error(resp, "get claims failed", http.StatusUnauthorized)
-		return
-	}
+	//claims, found := authutil.TokenClaimsFromCtx(request.Context())
+	//if !found {
+	//	http.Error(resp, "get claims failed", http.StatusUnauthorized)
+	//	return
+	//}
 	uhs.log.Info("minio endpoint", zap.String("endpoint", uhs.envConfig.MinioEndpoint))
 	// Get user_id and file from the form data
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
@@ -27,11 +25,11 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 		http.Error(resp, "parse user_id failed", http.StatusBadRequest)
 		return
 	}
-	if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
-		(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == uint32(userID))) {
-		http.Error(resp, "invalid access", http.StatusUnauthorized)
-		return
-	}
+	//if !(claims.Role == commonpb.UserRole_USER_ROLE_ADMIN ||
+	//	(claims.Role == commonpb.UserRole_USER_ROLE_NORMAL && claims.UserID == uint32(userID))) {
+	//	http.Error(resp, "invalid access", http.StatusUnauthorized)
+	//	return
+	//}
 
 	file, fileHeader, err := request.FormFile("file")
 	if err != nil {
