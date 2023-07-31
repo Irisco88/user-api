@@ -41,11 +41,11 @@ func (uhs *UserHTTPServer) DownloadAvatarHandler(resp http.ResponseWriter, reque
 	objectName := fmt.Sprintf("user%d/%s", userID, fileName)
 	if e := uhs.minioClient.FGetObject(request.Context(), uhs.envConfig.MinioAvatarsBucket, objectName, tempFile.Name(), minio.GetObjectOptions{}); e != nil {
 		if minioErr, ok := e.(minio.ErrorResponse); ok && minioErr.Code == "NoSuchKey" {
-			http.Error(resp, "object not found", http.StatusNotFound)
+			respondWithError(resp, http.StatusNotFound, "object not found")
 			return
 		}
 		uhs.log.Error("failed to get object", zap.Error(e))
-		http.Error(resp, "internal error", http.StatusInternalServerError)
+		respondWithError(resp, http.StatusInternalServerError, "internal error")
 		return
 	}
 	uhs.log.Info("temp file created", zap.String("path", tempFile.Name()))
