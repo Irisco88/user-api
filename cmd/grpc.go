@@ -6,7 +6,7 @@ import (
 	grpcZap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpcTags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/openfms/authutil"
+	"github.com/irisco88/authutil"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

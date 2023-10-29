@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
-	userpb "github.com/openfms/protos/gen/user/v1"
+	userpb "github.com/irisco88/protos/gen/user/v1"
 )
 
 var (

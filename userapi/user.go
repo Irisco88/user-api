@@ -1,10 +1,10 @@
 package userapi
 
 import (
-	"github.com/openfms/authutil"
-	commonpb "github.com/openfms/protos/gen/common/v1"
-	userpb "github.com/openfms/protos/gen/user/v1"
-	"github.com/openfms/user-api/db"
+	"github.com/irisco88/authutil"
+	commonpb "github.com/irisco88/protos/gen/common/v1"
+	userpb "github.com/irisco88/protos/gen/user/v1"
+	"github.com/irisco88/user-api/db"
 	"go.uber.org/zap"
 )
 

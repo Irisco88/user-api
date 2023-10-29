@@ -3,8 +3,8 @@ package userapi
 import (
 	"context"
 	"errors"
-	userpb "github.com/openfms/protos/gen/user/v1"
-	userdb "github.com/openfms/user-api/db/postgres"
+	userpb "github.com/irisco88/protos/gen/user/v1"
+	userdb "github.com/irisco88/user-api/db/postgres"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"

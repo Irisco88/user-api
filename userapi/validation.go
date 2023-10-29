@@ -3,7 +3,7 @@ package userapi
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	userpb "github.com/openfms/protos/gen/user/v1"
+	userpb "github.com/irisco88/protos/gen/user/v1"
 	"regexp"
 )
 

@@ -11,7 +11,7 @@ import (
 	squirrel "github.com/Masterminds/squirrel"
 	gomock "github.com/golang/mock/gomock"
 	pgxpool "github.com/jackc/pgx/v5/pgxpool"
-	userv1 "github.com/openfms/protos/gen/user/v1"
+	userv1 "github.com/irisco88/protos/gen/user/v1"
 )
 
 // MockUserDBConn is a mock of UserDBConn interface.

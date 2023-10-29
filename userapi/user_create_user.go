@@ -3,9 +3,9 @@ package userapi
 import (
 	"context"
 	"errors"
-	"github.com/openfms/authutil"
-	userv1pb "github.com/openfms/protos/gen/user/v1"
-	userdb "github.com/openfms/user-api/db/postgres"
+	"github.com/irisco88/authutil"
+	userv1pb "github.com/irisco88/protos/gen/user/v1"
+	userdb "github.com/irisco88/user-api/db/postgres"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
