@@ -3,8 +3,8 @@ package postgres
 import (
 	"context"
 	"errors"
-	"github.com/jackc/pgx/v5/pgconn"
 	userpb "github.com/irisco88/protos/gen/user/v1"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 var (

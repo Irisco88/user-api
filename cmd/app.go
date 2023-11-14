@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/irisco88/authutil"
 	userpb "github.com/irisco88/protos/gen/user/v1"
 	"github.com/irisco88/user-api/db"
 	"github.com/irisco88/user-api/envconfig"
 	userhttp "github.com/irisco88/user-api/httpserver"
 	"github.com/irisco88/user-api/userapi"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc/reflection"
 	"log"

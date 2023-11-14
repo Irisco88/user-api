@@ -3,8 +3,8 @@ package postgres
 import (
 	"context"
 	sqlmaker "github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v5/pgxpool"
 	userpb "github.com/irisco88/protos/gen/user/v1"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"time"
 )
 
