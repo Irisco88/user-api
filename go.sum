@@ -56,8 +56,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1 h1:6UKoz5ujsI55KNpsJH3UwCq3T8k
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1/go.mod h1:YvJ2f6MplWDhfxiUC3KpyTy76kYUZA4W3pTv/wdKQ9Y=
 github.com/irisco88/authutil v1.1.16 h1:KVgfxVob8PQXiQfCDPc6XZ/9bt4GllRVIgMkW+52mvU=
 github.com/irisco88/authutil v1.1.16/go.mod h1:vt0bxxLuqGTUPdBunJu8NOQuUbI+NvVXqkg3QMciN9A=
-github.com/irisco88/protos v1.1.21 h1:CGRO1MIwwPJju54fctX6gHIjWRNRpifCc5DOgUk4s2A=
-github.com/irisco88/protos v1.1.21/go.mod h1:tF7Xs39vDxzh/bjDjkCcEAGUiPeJKrNP3dIVWexcQkI=
+github.com/irisco88/protos v1.1.22 h1:8PWzfmV8zjeUuZ90evgmX7XNcxRvXg6qcVwIbMyDvrQ=
+github.com/irisco88/protos v1.1.22/go.mod h1:tF7Xs39vDxzh/bjDjkCcEAGUiPeJKrNP3dIVWexcQkI=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a h1:bbPeKD0xmW/Y25WS6cokEszi5g+S0QxI/d45PkRi7Nk=
