@@ -24,7 +24,22 @@ func (uhs *UserHTTPServer) UploadAvatarHandler(resp http.ResponseWriter, request
 
 		return
 	}
-	// Get user_id and file from the form data
+	
+	   uhs.log.Info("user20_",
+	   zap.String("user2_", "&&&&&&&&&&&&&&&&&&&&&&"+ request.FormValue("user_id")),
+   )
+
+
+	   for key, values := range request.Form {
+		   for _, value := range values {
+
+			   uhs.log.Info("user21&&&&&&&&&&&&&&&&&&&&&&",
+		zap.String("user2_", "%s: %s"+ key+"_" +value),
+	)
+		   }
+	   }
+
+	
 	userID, err := strconv.ParseUint(request.FormValue("user_id"), 10, 32)
 	if err != nil {
 		respondWithError(resp, http.StatusBadRequest, "parse user_id failed")

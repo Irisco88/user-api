@@ -3,6 +3,7 @@ package userapi
 import (
 	"context"
 	"errors"
+
 	userpb "github.com/irisco88/protos/gen/user/v1"
 	userdb "github.com/irisco88/user-api/db/postgres"
 	"go.uber.org/zap"
@@ -37,7 +38,14 @@ func (us *UserService) SignIn(ctx context.Context, req *userpb.SignInRequest) (*
 		)
 		return nil, status.Error(codes.Internal, "internal error")
 	}
+	us.logger.Error("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&",
+		zap.Error(err),
+		zap.String("***********************************", user.FirstName+" "+user.LastName+"_"+user.Avatar+"_"+user.Role.String()),
+	)
 	return &userpb.SignInResponse{
-		Token: token,
+		Token:    token,
+		Fullname: user.FirstName + " " + user.LastName,
+		Avatar:   user.Avatar,
+		Roll:     user.Role.String(),
 	}, nil
 }

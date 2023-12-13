@@ -6,6 +6,7 @@ import (
 	userpb "github.com/irisco88/protos/gen/user/v1"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"go.uber.org/zap"
 )
 
 const updateUserQuery = `
@@ -24,6 +25,8 @@ const updateUserQuery = `
 
 // UpdateUser updates a new user
 func (udb *UserDB) UpdateUser(ctx context.Context, user *userpb.User) error {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
 	err := udb.GetPgConn().QueryRow(ctx, updateUserQuery,
 		user.GetFirstName(),
 		user.GetLastName(),

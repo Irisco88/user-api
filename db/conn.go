@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/jackc/pgx/v5/pgxpool"
 	userdb "github.com/irisco88/user-api/db/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock_db/conn.go -package=$GOPACKAG
