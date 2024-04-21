@@ -11,7 +11,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/irisco88/authutil v1.1.16
-	github.com/irisco88/protos v1.2.6
+	github.com/irisco88/protos v1.3.9
 	github.com/jackc/pgx/v5 v5.4.1
 	github.com/minio/minio-go/v7 v7.0.61
 	github.com/urfave/cli/v2 v2.25.7

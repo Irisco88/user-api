@@ -46,7 +46,7 @@ func main() {
 		log.Fatal(err)
 	}
 	app := &cli.App{
-		Name:  "imeisapi",
+		Name:  "ioelsapi",
 		Usage: "user service",
 		Commands: []*cli.Command{
 			{
